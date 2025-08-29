@@ -30,7 +30,7 @@ object State {
       onDone.onComplete() <~ this
   }
 
-  final case class Failure[+E](failures: NonEmptyChain[E]) extends State[Any, Nothing, E] {
+  final case class Failure[+E](failures: NonEmptyChain[Either[Exception, E]]) extends State[Any, Nothing, E] {
     private[flows] def <~[_I, _O, _E >: E](state: State[_I, _O, _E]): Failure[_E] = state match {
       case Failure(previous) => Failure(previous ++ failures)
       case _                 => this
@@ -40,5 +40,5 @@ object State {
       onDone.onFailure() <~ this
   }
 
-  def failure(e: Exception): Failure[Nothing] = ???
+  def failure(e: Exception): Failure[Nothing] = Failure(NonEmptyChain(Left(e)))
 }
