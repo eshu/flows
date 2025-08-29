@@ -12,7 +12,7 @@ lazy val root = (project in file(".")).settings(
     "--deprecation",
     "--feature",
     "--unchecked",
-    //"-Wunused:_",
+    "-Wunused:_",
     "-Wdead-code",
     "-Xlint:_",
     "-Xfatal-warnings"
