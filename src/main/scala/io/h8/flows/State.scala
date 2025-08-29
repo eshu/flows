@@ -2,6 +2,8 @@ package io.h8.flows
 
 import cats.data.NonEmptyChain
 
+import scala.annotation.nowarn
+
 sealed trait State[-I, +O, +E] {
   private[flows] def <~[_I >: O, _O, _E >: E](that: State[_I, _O, _E]): State[I, _O, _E]
 
@@ -30,7 +32,9 @@ object State {
       onDone.onComplete() <~ this
   }
 
-  final case class Failure[+E](failures: NonEmptyChain[Either[Exception, E]]) extends State[Any, Nothing, E] {
+  @nowarn("msg=access modifiers for `copy` method are copied from the case class constructor under Scala 3")
+  @nowarn("msg=access modifiers for `apply` method are copied from the case class constructor under Scala 3")
+  final case class Failure[+E] private (failures: NonEmptyChain[Either[Exception, E]]) extends State[Any, Nothing, E] {
     def this(head: E, tail: E*) = this(NonEmptyChain(Right(head), (tail map Right.apply)*))
 
     private[flows] def <~[_I, _O, _E >: E](state: State[_I, _O, _E]): Failure[_E] = state match {
