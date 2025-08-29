@@ -39,4 +39,6 @@ object State {
     override private[flows] def ~>[_I, _O <: Any, _E >: E](onDone: OnDone[_I, _O, _E]): State[_I, Nothing, _E] =
       onDone.onFailure() <~ this
   }
+
+  def failure(e: Exception): Failure[Nothing] = ???
 }
